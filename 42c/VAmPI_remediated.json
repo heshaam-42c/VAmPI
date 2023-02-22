@@ -1,0 +1,855 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "VAmPI",
+        "description": "OpenAPI v3 specs for VAmPI",
+        "version": "1.0b"
+    },
+    "x-42c-accept-empty-security": true,
+    "servers": [
+        {
+            "url": "http://localhost:5002"
+        }
+    ],
+    "x-42c-response-strategies": [
+        {
+            "x-42c-strategy": {
+                "protections": [
+                    {
+                        "security-headers_0.1": {
+                            "hsts.max_age": 3600,
+                            "csp.policy": "default-src: 'self'; upgrade-insecure-requests; block-all-mixed-content"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "x-42c-request-strategies": [
+        {
+            "x-42c-strategy": {
+                "protections": [
+                    {
+                        "request-limiter_0.1": {
+                            "hits": 3,
+                            "window": 10,
+                            "add.retry_after": true,
+                            "key": "req_limiter_login"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "components": {
+        "responses": {
+            "GenericError": {
+                "description": "Generic error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "fail"
+                                    ]
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "maxLength": 256,
+                                    "pattern": "^[a-zA-Z0-9\\.'\\\" \\!]+$"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            },
+            "Invalid": {
+                "description": "Invalid request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "fail"
+                                    ]
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "maxLength": 256,
+                                    "pattern": "^[a-zA-Z0-9\\.'\\\" \\!]+$"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "Unauthorized response schema",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "fail"
+                                    ]
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Signature expired. Please log in again."
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "Username": {
+                "type": "string",
+                "pattern": "^[a-z0-9]{3,16}$",
+                "example": "test"
+            },
+            "Email": {
+                "type": "string",
+                "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,63})$",
+                "example": "test@test.com",
+                "maxLength": 254
+            },
+            "Password": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9]{16,64}$",
+                "example": "epBdabXdT2X9hh72"
+            },
+            "BookTitle": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9 '\"]{1,32}$",
+                "example": "Example book title"
+            },
+            "Secret": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9 ]{1,64}$",
+                "example": "secret for bookTitle78"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "paths": {
+        "/createdb": {
+            "get": {
+                "tags": [
+                    "db-init"
+                ],
+                "summary": "Creates and populates the database with dummy data",
+                "description": "Creates and populates the database with dummy data",
+                "operationId": "api_views.main.populate_db",
+                "responses": {
+                    "200": {
+                        "description": "Creates and populates the database with dummy data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Database populated."
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "tags": [
+                    "home"
+                ],
+                "summary": "VAmPI home",
+                "description": "VAmPI is a vulnerable on purpose API. It was created in order to evaluate the efficiency of third party tools in identifying vulnerabilities in APIs but it can also be used in learning/teaching purposes.",
+                "operationId": "api_views.main.basic",
+                "responses": {
+                    "200": {
+                        "description": "Home - Help",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "VAmPI the Vulnerable API"
+                                            ]
+                                        },
+                                        "Help": {
+                                            "type": "string",
+                                            "enum": [
+                                                "VAmPI is a vulnerable on purpose API. It was created in order to evaluate the efficiency of third party tools in identifying vulnerabilities in APIs but it can also be used in learning/teaching purposes."
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/users/v1": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Retrieves all users",
+                "description": "Displays all users with basic information",
+                "operationId": "api_views.users.get_all_users",
+                "responses": {
+                    "200": {
+                        "description": "See basic info about all users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "additionalProperties": false,
+                                    "type": "object",
+                                    "properties": {
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "email": {
+                                                        "$ref": "#/components/schemas/Email"
+                                                    },
+                                                    "username": {
+                                                        "$ref": "#/components/schemas/Username"
+                                                    }
+                                                },
+                                                "additionalProperties": false
+                                            },
+                                            "maxItems": 100
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/users/v1/register": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Register new user",
+                "description": "Register new user",
+                "operationId": "api_views.users.register_user",
+                "requestBody": {
+                    "description": "Username of the user",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "$ref": "#/components/schemas/Username"
+                                    },
+                                    "password": {
+                                        "$ref": "#/components/schemas/Password"
+                                    },
+                                    "email": {
+                                        "$ref": "#/components/schemas/Email"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Successfully registered. Login to receive an auth token."
+                                            ]
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/Invalid"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/users/v1/login": {
+            "post": {
+                "security": [],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Login to VAmPI",
+                "description": "Login to VAmPI",
+                "operationId": "api_views.users.login_user",
+                "requestBody": {
+                    "description": "Username of the user",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "$ref": "#/components/schemas/Username"
+                                    },
+                                    "password": {
+                                        "$ref": "#/components/schemas/Password"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully logged in user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "auth_token": {
+                                            "type": "string",
+                                            "pattern": "^([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_\\-\\+\\/=]{4,})",
+                                            "maxLength": 256
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Successfully logged in."
+                                            ]
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/Invalid"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/users/v1/{username}": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Retrieves user by username",
+                "description": "Displays user by username",
+                "operationId": "api_views.users.get_by_username",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "retrieve username data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Username"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully display user info",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "username": {
+                                            "$ref": "#/components/schemas/Username"
+                                        },
+                                        "email": {
+                                            "$ref": "#/components/schemas/Email"
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Deletes user by username (Only Admins)",
+                "description": "Deletes user by username (Only Admins)",
+                "operationId": "api_views.users.delete_user",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "Delete username",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Username"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucessfully deleted user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "User deleted."
+                                            ]
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "fail"
+                                            ]
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "User not found!"
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/users/v1/{username}/email": {
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update users email",
+                "description": "Update a single users email",
+                "operationId": "api_views.users.update_email",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username to update email",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Username"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "field to update",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "$ref": "#/components/schemas/Email"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": "Sucessfully updated user email",
+                        "content": {}
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/Invalid"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/users/v1/{username}/password": {
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update users password",
+                "description": "Update users password",
+                "operationId": "api_views.users.update_password",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username to update password",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Username"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "field to update",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "password": {
+                                        "$ref": "#/components/schemas/Password"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": "Sucessfully updated users password",
+                        "content": {}
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/Invalid"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/books/v1": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Retrieves all books",
+                "description": "Retrieves all books",
+                "operationId": "api_views.books.get_all_books",
+                "responses": {
+                    "200": {
+                        "description": "See all books",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "Books": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "book_title": {
+                                                        "$ref": "#/components/schemas/BookTitle"
+                                                    },
+                                                    "user": {
+                                                        "$ref": "#/components/schemas/Username"
+                                                    }
+                                                },
+                                                "additionalProperties": false
+                                            },
+                                            "maxItems": 100
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Add new book",
+                "description": "Add new book",
+                "operationId": "api_views.books.add_new_book",
+                "requestBody": {
+                    "description": "Add new book with title and secret content only available to the user who added it.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "book_title": {
+                                        "$ref": "#/components/schemas/BookTitle"
+                                    },
+                                    "secret": {
+                                        "$ref": "#/components/schemas/Secret"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully added a book",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Book has been added."
+                                            ]
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "fail"
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/Invalid"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        },
+        "/books/v1/{book_title}": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Retrieves book by title along with secret",
+                "description": "Retrieves book by title along with secret. Only the owner may retrieve it",
+                "operationId": "api_views.books.get_by_title",
+                "parameters": [
+                    {
+                        "name": "book_title",
+                        "in": "path",
+                        "description": "retrieve book data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/BookTitle"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieve book info",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "book_title": {
+                                                "$ref": "#/components/schemas/BookTitle"
+                                            },
+                                            "owner": {
+                                                "$ref": "#/components/schemas/Username"
+                                            },
+                                            "secret": {
+                                                "$ref": "#/components/schemas/Secret"
+                                            }
+                                        },
+                                        "additionalProperties": false
+                                    },
+                                    "maxItems": 100
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "fail"
+                                            ]
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Signature expired. Please log in again.",
+                                                "Invalid token"
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "fail"
+                                            ]
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Book not found!"
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "$ref": "#/components/responses/GenericError"
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ]
+}

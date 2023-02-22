@@ -1,0 +1,623 @@
+{
+    "runtimeConfiguration": {
+        "logLevel": "debug",
+        "logDestination": "stdout+platform",
+        "maxLogFileSize": 2147483648,
+        "headerNameRequestId": "x-scan-request-id",
+        "headerNameScenarioId": "x-scan-scenario-id",
+        "flowrate": 10,
+        "timeout": 30,
+        "tlsInsecureSkipVerify": true,
+        "followRedirection": true,
+        "happyPathRetry": 1,
+        "happyPathOnly": false,
+        "happyPathConformanceStrict": false,
+        "maxScanTime": 3600,
+        "memoryLimit": 2147483648,
+        "memoryTimeSpan": 10,
+        "indexed": false,
+        "prettify": false,
+        "maxBodySizeScan": 10485760,
+        "maxHttpResponseSizeHappyPathReport": 0,
+        "maxBodySizeHappyPathReport": 8092,
+        "maxHttpResponseSizeTestReport": 0,
+        "maxBodySizeTestReport": 8092,
+        "issuesOnly": true,
+        "maxIssues": 10000,
+        "maxReportSize": 104857600
+    },
+    "authenticationDetails": [
+        {
+            "bearerAuth": {
+                "type": "bearer",
+                "default": "bearerAuth",
+                "credentials": {
+                    "bearerAuth": {
+                        "credential": "{{bearer}}",
+                        "description": "Admin Credential",
+                        "requests": [
+                            {
+                                "request": {
+                                    "requestDetails": {
+                                        "cookieParameters": {},
+                                        "headerParameters": {
+                                            "Content-Type": "application/json"
+                                        },
+                                        "host": "{{host}}",
+                                        "method": "post",
+                                        "path": "/users/v1/login",
+                                        "pathParameters": {},
+                                        "queryParameters": {},
+                                        "requestBody": {
+                                            "json": {
+                                                "password": "{{password}}",
+                                                "username": "{{username}}"
+                                            },
+                                            "mode": "json"
+                                        }
+                                    },
+                                    "type": "42c"
+                                },
+                                "responseAnalysisBehavior": {
+                                    "httpStatusExpected": [
+                                        "200"
+                                    ]
+                                },
+                                "responseProcessing": {
+                                    "variableAssignments": {
+                                        "contentType": "application/json",
+                                        "httpStatus": 200,
+                                        "variables": {
+                                            "bearer": "${json_pointer(json(http.response.body),'/auth_token')}"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "bearerAuth2": {
+                        "credential": "{{bearer2}}",
+                        "description": "Admin Credential",
+                        "requests": [
+                            {
+                                "request": {
+                                    "requestDetails": {
+                                        "cookieParameters": {},
+                                        "headerParameters": {
+                                            "Content-Type": "application/json"
+                                        },
+                                        "host": "{{host}}",
+                                        "method": "post",
+                                        "path": "/users/v1/login",
+                                        "pathParameters": {},
+                                        "queryParameters": {},
+                                        "requestBody": {
+                                            "json": {
+                                                "password": "{{password2}}",
+                                                "username": "{{username2}}"
+                                            },
+                                            "mode": "json"
+                                        }
+                                    },
+                                    "type": "42c"
+                                },
+                                "responseAnalysisBehavior": {
+                                    "httpStatusExpected": [
+                                        "200"
+                                    ]
+                                },
+                                "responseProcessing": {
+                                    "variableAssignments": {
+                                        "contentType": "application/json",
+                                        "httpStatus": 200,
+                                        "variables": {
+                                            "bearer2": "${json_pointer(json(http.response.body),'/auth_token')}"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }                    
+                }
+            }
+        }
+    ],
+    "authorizationTests": {
+        "BOLASwap": {
+            "key": "authentication-swapping-bola",
+            "source": [
+                "bearerAuth/bearerAuth"
+            ],
+            "target": [
+                "bearerAuth/bearerAuth2"
+            ]
+        }
+    },
+    "playbook": {
+        "before": [
+            {
+                "request": {
+                    "type": "42c",
+                    "requestDetails": {
+                        "host": "{{host}}",
+                        "path": "/createdb",
+                        "method": "get",
+                        "pathParameters": {},
+                        "queryParameters": {},
+                        "headerParameters": {},
+                        "cookieParameters": {},
+                        "requestBody": null
+                    }
+                },
+                "responseAnalysisBehavior": {
+                    "httpStatusExpected": [
+                        "200"
+                    ]
+                }
+            },
+            {
+                "request": {
+                    "type": "42c",
+                    "requestDetails": {
+                        "host": "{{host}}",
+                        "path": "/users/v1/register",
+                        "method": "post",
+                        "pathParameters": {},
+                        "queryParameters": {},
+                        "headerParameters": {
+                            "Content-Type": "application/json"
+                        },
+                        "cookieParameters": {},
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "username": "{{username}}",
+                                "password": "{{password}}",
+                                "email": "username@password.fr",
+                                "admin": true
+                            }
+                        }
+                    }
+                },
+                "responseAnalysisBehavior": {
+                    "httpStatusExpected": [
+                        "200"
+                    ]
+                }
+            },
+            {
+                "request": {
+                    "type": "42c",
+                    "requestDetails": {
+                        "host": "{{host}}",
+                        "path": "/users/v1/register",
+                        "method": "post",
+                        "pathParameters": {},
+                        "queryParameters": {},
+                        "headerParameters": {
+                            "Content-Type": "application/json"
+                        },
+                        "cookieParameters": {},
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "username": "{{username2}}",
+                                "password": "{{password2}}",
+                                "email": "username2@password.fr",
+                                "admin": true
+                            }
+                        }
+                    }
+                },
+                "responseAnalysisBehavior": {
+                    "httpStatusExpected": [
+                        "200"
+                    ]
+                }
+            }
+        ],
+        "paths": {
+            "/": {
+                "get": {
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.main.basic"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "/books/v1": {
+                "get": {
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.books.get_all_books"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "post": {
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.books.add_new_book"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "/books/v1/{book_title}": {
+                "get": {
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.books.get_by_title"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "/users/v1": {
+                "get": {
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.users.get_all_users"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "/users/v1/login": {
+                "post": {
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.users.login_user"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "/users/v1/register": {
+                "post": {
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.users.register_user"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "/users/v1/{username}": {
+                "get": {
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.users.get_by_username"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "/users/v1/{username}/password": {
+                "put": {
+                    "authorizationTests": [
+                        "BOLASwap"
+                    ],
+                    "happyPaths": [
+                        {
+                            "key": "happy.path.success",
+                            "requests": [
+                                {
+                                    "$ref": "#/requests/api_views.users.update_password"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "environment": {
+        "host": "env_with_default('SCAN42C_HOST','http://localhost:5002')",
+        "password": "kcirreip",
+        "username": "test",
+        "password2": "kcirreip2",
+        "username2": "test2"
+    },
+    "requests": {
+        "api_views.books.add_new_book": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/books/v1",
+                    "method": "post",
+                    "pathParameters": {},
+                    "queryParameters": {},
+                    "headerParameters": {
+                        "Content-Type": "application/json"
+                    },
+                    "cookieParameters": {},
+                    "requestBody": {
+                        "mode": "json",
+                        "json": {
+                            "book_title": "Example book title",
+                            "secret": "secret for bookTitle78"
+                        }
+                    }
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.books.get_all_books": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/books/v1",
+                    "method": "get",
+                    "pathParameters": {},
+                    "queryParameters": {},
+                    "headerParameters": {},
+                    "cookieParameters": {},
+                    "requestBody": null
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.books.get_by_title": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/books/v1/{book_title}",
+                    "method": "get",
+                    "pathParameters": {
+                        "book_title": "Example book title"
+                    },
+                    "queryParameters": {},
+                    "headerParameters": {},
+                    "cookieParameters": {},
+                    "requestBody": null
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.main.basic": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/",
+                    "method": "get",
+                    "pathParameters": {},
+                    "queryParameters": {},
+                    "headerParameters": {},
+                    "cookieParameters": {},
+                    "requestBody": null
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.main.populate_db": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/createdb",
+                    "method": "get",
+                    "pathParameters": {},
+                    "queryParameters": {},
+                    "headerParameters": {},
+                    "cookieParameters": {},
+                    "requestBody": null
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.users.get_all_users": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/users/v1",
+                    "method": "get",
+                    "pathParameters": {},
+                    "queryParameters": {},
+                    "headerParameters": {},
+                    "cookieParameters": {},
+                    "requestBody": null
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.users.get_by_username": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/users/v1/{username}",
+                    "method": "get",
+                    "pathParameters": {
+                        "username": "test"
+                    },
+                    "queryParameters": {},
+                    "headerParameters": {},
+                    "cookieParameters": {},
+                    "requestBody": null
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.users.login_user": {
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/users/v1/login",
+                    "method": "post",
+                    "pathParameters": {},
+                    "queryParameters": {},
+                    "headerParameters": {
+                        "Content-Type": "application/json"
+                    },
+                    "cookieParameters": {},
+                    "requestBody": {
+                        "mode": "json",
+                        "json": {
+                            "password": "epBdabXdT2X9hh72",
+                            "username": "test"
+                        }
+                    }
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.users.register_user": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/users/v1/register",
+                    "method": "post",
+                    "pathParameters": {},
+                    "queryParameters": {},
+                    "headerParameters": {
+                        "Content-Type": "application/json"
+                    },
+                    "cookieParameters": {},
+                    "requestBody": {
+                        "mode": "json",
+                        "json": {
+                            "email": "test@test.com",
+                            "password": "epBdabXdT2X9hh72",
+                            "username": "test"
+                        }
+                    }
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "200"
+                ]
+            }
+        },
+        "api_views.users.update_password": {
+            "auth": [
+                "bearerAuth"
+            ],
+            "request": {
+                "type": "42c",
+                "requestDetails": {
+                    "host": "{{host}}",
+                    "path": "/users/v1/{username}/password",
+                    "method": "put",
+                    "pathParameters": {
+                        "username": "test"
+                    },
+                    "queryParameters": {},
+                    "headerParameters": {
+                        "Content-Type": "application/json"
+                    },
+                    "cookieParameters": {},
+                    "requestBody": {
+                        "mode": "json",
+                        "json": {
+                            "password": "epBdabXdT2X9hh72"
+                        }
+                    }
+                }
+            },
+            "responseAnalysisBehavior": {
+                "httpStatusExpected": [
+                    "204"
+                ]
+            }
+        }
+    }
+}
