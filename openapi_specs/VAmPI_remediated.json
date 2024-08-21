@@ -11,147 +11,6 @@
             "url": "http://localhost:5002"
         }
     ],
-    "x-42c-response-strategies": [
-        {
-            "x-42c-strategy": {
-                "protections": [
-                    {
-                        "security-headers_0.1": {
-                            "hsts.max_age": 3600,
-                            "csp.policy": "default-src: 'self'; upgrade-insecure-requests; block-all-mixed-content"
-                        }
-                    }
-                ]
-            }
-        }
-    ],
-    "x-42c-request-strategies": [
-        {
-            "x-42c-strategy": {
-                "protections": [
-                    {
-                        "request-limiter_0.1": {
-                            "hits": 3,
-                            "window": 10,
-                            "add.retry_after": true,
-                            "key": "req_limiter_login"
-                        }
-                    }
-                ]
-            }
-        }
-    ],
-    "components": {
-        "responses": {
-            "GenericError": {
-                "description": "Generic error",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status": {
-                                    "type": "string",
-                                    "enum": [
-                                        "fail"
-                                    ]
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "maxLength": 256,
-                                    "pattern": "^[a-zA-Z0-9\\.'\\\" \\!]+$"
-                                }
-                            },
-                            "additionalProperties": false
-                        }
-                    }
-                }
-            },
-            "Invalid": {
-                "description": "Invalid request",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status": {
-                                    "type": "string",
-                                    "enum": [
-                                        "fail"
-                                    ]
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "maxLength": 256,
-                                    "pattern": "^[a-zA-Z0-9\\.'\\\" \\!]+$"
-                                }
-                            },
-                            "additionalProperties": false
-                        }
-                    }
-                }
-            },
-            "Unauthorized": {
-                "description": "Unauthorized response schema",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "status": {
-                                    "type": "string",
-                                    "enum": [
-                                        "fail"
-                                    ]
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "enum": [
-                                        "Signature expired. Please log in again."
-                                    ]
-                                }
-                            },
-                            "additionalProperties": false
-                        }
-                    }
-                }
-            }
-        },
-        "schemas": {
-            "Username": {
-                "type": "string",
-                "pattern": "^[a-z0-9]{3,16}$",
-                "example": "test"
-            },
-            "Email": {
-                "type": "string",
-                "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,63})$",
-                "example": "test@test.com",
-                "maxLength": 254
-            },
-            "Password": {
-                "type": "string",
-                "pattern": "^[a-zA-Z0-9]{16,64}$",
-                "example": "epBdabXdT2X9hh72"
-            },
-            "BookTitle": {
-                "type": "string",
-                "pattern": "^[A-Za-z0-9 '\"]{1,32}$",
-                "example": "Example book title"
-            },
-            "Secret": {
-                "type": "string",
-                "pattern": "^[a-zA-Z0-9 ]{1,64}$",
-                "example": "secret for bookTitle78"
-            }
-        },
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer"
-            }
-        }
-    },
     "paths": {
         "/createdb": {
             "get": {
@@ -844,6 +703,147 @@
                         "$ref": "#/components/responses/GenericError"
                     }
                 }
+            }
+        }
+    },
+    "x-42c-response-strategies": [
+        {
+            "x-42c-strategy": {
+                "protections": [
+                    {
+                        "security-headers_0.1": {
+                            "hsts.max_age": 3600,
+                            "csp.policy": "default-src: 'self'; upgrade-insecure-requests; block-all-mixed-content"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "x-42c-request-strategies": [
+        {
+            "x-42c-strategy": {
+                "protections": [
+                    {
+                        "request-limiter_0.1": {
+                            "hits": 3,
+                            "window": 10,
+                            "add.retry_after": true,
+                            "key": "req_limiter_login"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "components": {
+        "responses": {
+            "GenericError": {
+                "description": "Generic error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "fail"
+                                    ]
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "maxLength": 256,
+                                    "pattern": "^[a-zA-Z0-9\\.'\\\" \\!]+$"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            },
+            "Invalid": {
+                "description": "Invalid request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "fail"
+                                    ]
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "maxLength": 256,
+                                    "pattern": "^[a-zA-Z0-9\\.'\\\" \\!]+$"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "Unauthorized response schema",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "fail"
+                                    ]
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Signature expired. Please log in again."
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "Username": {
+                "type": "string",
+                "pattern": "^[a-z0-9]{3,16}$",
+                "example": "test"
+            },
+            "Email": {
+                "type": "string",
+                "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,63})$",
+                "example": "test@test.com",
+                "maxLength": 254
+            },
+            "Password": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9]{16,64}$",
+                "example": "epBdabXdT2X9hh72"
+            },
+            "BookTitle": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9 '\"]{1,32}$",
+                "example": "Example book title"
+            },
+            "Secret": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9 ]{1,64}$",
+                "example": "secret for bookTitle78"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
             }
         }
     },
