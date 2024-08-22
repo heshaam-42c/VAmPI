@@ -250,13 +250,15 @@
                                         "message": {
                                             "type": "string",
                                             "enum": [
-                                                "Successfully logged in."
+                                                "Successfully logged in.",
+                                                "Password is not correct for the given username."
                                             ]
                                         },
                                         "status": {
                                             "type": "string",
                                             "enum": [
-                                                "success"
+                                                "success",
+                                                "fail"
                                             ]
                                         }
                                     },
@@ -777,7 +779,8 @@
                                 "message": {
                                     "type": "string",
                                     "enum": [
-                                        "Signature expired. Please log in again."
+                                        "Signature expired. Please log in again.",
+                                        "Only Admins may delete users!"
                                     ]
                                 }
                             },
