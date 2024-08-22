@@ -638,23 +638,19 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "book_title": {
-                                                "$ref": "#/components/schemas/BookTitle"
-                                            },
-                                            "owner": {
-                                                "$ref": "#/components/schemas/Username"
-                                            },
-                                            "secret": {
-                                                "$ref": "#/components/schemas/Secret"
-                                            }
+                                    "type": "object",
+                                    "properties": {
+                                        "book_title": {
+                                            "$ref": "#/components/schemas/BookTitle"
                                         },
-                                        "additionalProperties": false
+                                        "owner": {
+                                            "$ref": "#/components/schemas/Username"
+                                        },
+                                        "secret": {
+                                            "$ref": "#/components/schemas/Secret"
+                                        }
                                     },
-                                    "maxItems": 100
+                                    "additionalProperties": false
                                 }
                             }
                         }
