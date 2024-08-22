@@ -6,6 +6,11 @@
         "version": "1.0b"
     },
     "x-42c-accept-empty-security": true,
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
     "servers": [
         {
             "url": "http://localhost:5002"
@@ -20,6 +25,7 @@
                 "summary": "Creates and populates the database with dummy data",
                 "description": "Creates and populates the database with dummy data",
                 "operationId": "api_views.main.populate_db",
+                "security": [],
                 "responses": {
                     "200": {
                         "description": "Creates and populates the database with dummy data",
@@ -54,6 +60,7 @@
                 "summary": "VAmPI home",
                 "description": "VAmPI is a vulnerable on purpose API. It was created in order to evaluate the efficiency of third party tools in identifying vulnerabilities in APIs but it can also be used in learning/teaching purposes.",
                 "operationId": "api_views.main.basic",
+                "security": [],
                 "responses": {
                     "200": {
                         "description": "Home - Help",
@@ -94,6 +101,7 @@
                 "summary": "Retrieves all users",
                 "description": "Displays all users with basic information",
                 "operationId": "api_views.users.get_all_users",
+                "security": [],
                 "responses": {
                     "200": {
                         "description": "See basic info about all users",
@@ -138,6 +146,7 @@
                 "summary": "Register new user",
                 "description": "Register new user",
                 "operationId": "api_views.users.register_user",
+                "security": [],
                 "requestBody": {
                     "description": "Username of the user",
                     "content": {
@@ -273,6 +282,7 @@
                 "summary": "Retrieves user by username",
                 "description": "Displays user by username",
                 "operationId": "api_views.users.get_by_username",
+                "security": [],
                 "parameters": [
                     {
                         "name": "username",
@@ -501,6 +511,7 @@
                 "summary": "Retrieves all books",
                 "description": "Retrieves all books",
                 "operationId": "api_views.books.get_all_books",
+                "security": [],
                 "responses": {
                     "200": {
                         "description": "See all books",
@@ -706,36 +717,6 @@
             }
         }
     },
-    "x-42c-response-strategies": [
-        {
-            "x-42c-strategy": {
-                "protections": [
-                    {
-                        "security-headers_0.1": {
-                            "hsts.max_age": 3600,
-                            "csp.policy": "default-src: 'self'; upgrade-insecure-requests; block-all-mixed-content"
-                        }
-                    }
-                ]
-            }
-        }
-    ],
-    "x-42c-request-strategies": [
-        {
-            "x-42c-strategy": {
-                "protections": [
-                    {
-                        "request-limiter_0.1": {
-                            "hits": 3,
-                            "window": 10,
-                            "add.retry_after": true,
-                            "key": "req_limiter_login"
-                        }
-                    }
-                ]
-            }
-        }
-    ],
     "components": {
         "responses": {
             "GenericError": {
@@ -847,9 +828,34 @@
             }
         }
     },
-    "security": [
+    "x-42c-response-strategies": [
         {
-            "bearerAuth": []
+            "x-42c-strategy": {
+                "protections": [
+                    {
+                        "security-headers_0.1": {
+                            "hsts.max_age": 3600,
+                            "csp.policy": "default-src: 'self'; upgrade-insecure-requests; block-all-mixed-content"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "x-42c-request-strategies": [
+        {
+            "x-42c-strategy": {
+                "protections": [
+                    {
+                        "request-limiter_0.1": {
+                            "hits": 3,
+                            "window": 10,
+                            "add.retry_after": true,
+                            "key": "req_limiter_login"
+                        }
+                    }
+                ]
+            }
         }
     ]
 }
