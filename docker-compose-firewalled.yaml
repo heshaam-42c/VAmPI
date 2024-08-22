@@ -1,0 +1,42 @@
+# Docker compose VAmPI example with 42Crunch API Firewall
+
+services:
+  vampi-secure:
+    build: ./
+    container_name: vampi-secure
+    ports:
+    - 5001:5000
+    environment:
+    - vulnerable=0
+
+  vampi-vulnerable:
+    build: ./
+    container_name: vampi-vulnerable
+    ports:
+    - 5002:5000
+    environment:
+    - vulnerable=1
+
+  apifirewall:
+    image: 42crunch/apifirewall:latest
+    container_name: 42crunch-api-firewall
+    ports:
+      - "4241:80"
+    # volumes:
+    #   - ./api-firewall/ssl:/opt/guardian/conf/ssl
+    command:
+      ["/bin/squire", "-platform", "protection.demolabs.42crunch.cloud:8001", "-debug"]
+    environment:
+      - SERVER_NAME=localhost:4241
+      - LISTEN_PORT=80
+      - PROTECTION_TOKEN=${PROTECTION_TOKEN}
+      - GUARDIAN_NODE_NAME=Local-Firewall
+      - GUARDIAN_INSTANCE_NAME=Local-Firewall
+      # - LISTEN_SSL_CERT=firewall-cert.pem
+      # - LISTEN_SSL_KEY=firewall-key.pem
+      - LISTEN_NO_TLS=true
+      - LOG_LEVEL=DEBUG
+      - TARGET_URL=http://host.docker.internal:5002
+    depends_on:
+      - vampi-vulnerable
+    env_file: ".env"
