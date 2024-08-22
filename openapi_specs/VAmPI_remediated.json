@@ -435,8 +435,7 @@
                 },
                 "responses": {
                     "204": {
-                        "description": "Sucessfully updated user email",
-                        "content": {}
+                        "description": "Sucessfully updated user email"
                     },
                     "400": {
                         "$ref": "#/components/responses/Invalid"
