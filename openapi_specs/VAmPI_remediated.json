@@ -487,8 +487,7 @@
                 },
                 "responses": {
                     "204": {
-                        "description": "Sucessfully updated users password",
-                        "content": {}
+                        "description": "Sucessfully updated users password"
                     },
                     "400": {
                         "$ref": "#/components/responses/Invalid"
