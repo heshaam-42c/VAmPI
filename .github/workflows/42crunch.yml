@@ -27,7 +27,7 @@ name: "42crunch"
 on: 
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 env:
   PLATFORM_URL: https://demolabs.42crunch.cloud
