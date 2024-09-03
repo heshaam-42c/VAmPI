@@ -796,7 +796,8 @@
                                     "type": "string",
                                     "enum": [
                                         "Signature expired. Please log in again.",
-                                        "Only Admins may delete users!"
+                                        "Only Admins may delete users!",
+                                        "Invalid token. Please log in again."
                                     ]
                                 }
                             },
