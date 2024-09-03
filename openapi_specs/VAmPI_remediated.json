@@ -13,6 +13,9 @@
     ],
     "servers": [
         {
+            "url": "http://localhost:4241"
+        },
+        {
             "url": "http://localhost:5002"
         }
     ],
@@ -288,7 +291,11 @@
                 "summary": "Retrieves user by username",
                 "description": "Displays user by username",
                 "operationId": "api_views.users.get_by_username",
-                "security": [],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "username",
@@ -515,7 +522,11 @@
                 "summary": "Retrieves all books",
                 "description": "Retrieves all books",
                 "operationId": "api_views.books.get_all_books",
-                "security": [],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "See all books",
