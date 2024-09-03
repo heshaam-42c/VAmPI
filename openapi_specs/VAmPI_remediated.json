@@ -258,7 +258,8 @@
                                             "type": "string",
                                             "enum": [
                                                 "Successfully logged in.",
-                                                "Password is not correct for the given username."
+                                                "Password is not correct for the given username.",
+                                                "Username does not exist"
                                             ]
                                         },
                                         "status": {
