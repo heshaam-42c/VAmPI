@@ -105,8 +105,8 @@
             "requestBody": {
               "mode": "json",
               "json": {
-                "book_title": "42Crunch book",
-                "secret": "secret for 42Crunch book"
+                "book_title": "{{bookTitle}}",
+                "secret": "secret for {{bookTitle}}"
               }
             }
           }
@@ -135,13 +135,21 @@
           }
         }
       },
+      "after": [
+        {
+          "$ref": "#/operations/api_views.main.populate_db/request"
+        }
+      ],
       "scenarios": [
         {
           "key": "happy.path",
           "requests": [
             {
               "fuzzing": true,
-              "$ref": "#/operations/api_views.books.add_new_book/request"
+              "$ref": "#/operations/api_views.books.add_new_book/request",
+              "environment": {
+                "bookTitle": "42Crunch book"
+              }
             }
           ],
           "fuzzing": true
