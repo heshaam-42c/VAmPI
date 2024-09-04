@@ -3,20 +3,27 @@
   "runtimeConfiguration": {
     "environment": "default",
     "laxTestingModeEnabled": false,
+    "apiConnectivityCheck": true,
     "logLevel": "error",
     "logDestination": "stdout+platform",
     "logMaxFileSize": 2147483648,
     "requestHeaderNameRequestId": "x-scan-request-id",
     "requestHeaderNameScenarioId": "x-scan-scenario-id",
+    "requestHeaderNameRequestType": "x-scan-request-type",
     "requestFlowrate": 100,
     "requestTimeout": 30,
     "requestTlsInsecureSkipVerify": true,
     "responseFollowRedirection": false,
     "responseMaxBodySizeScan": 10485760,
     "happyPathOnly": false,
-    "maxScanDuration": 3600,
+    "maxRequestRetryAttempts": 5,
+    "maxScanDuration": 1800,
     "memoryLimit": 2147483648,
     "memoryTimeSpan": 10,
+    "reportMaxRequestSizeHappyPath": 8092,
+    "reportMaxRequestSizeTest": 8092,
+    "reportIncludeRequestBody": true,
+    "reportIncludeResponseBody": true,
     "reportMaxHttpResponseSizeHappyPath": 8092,
     "reportMaxBodySizeHappyPath": 8092,
     "reportMaxHttpResponseSizeTest": 8092,
@@ -33,17 +40,16 @@
         "httpStatusExpected": true,
         "mustBeConformant": true
       },
-      "httpStatusExpected": [
-        "2XX",
-        "400",
-        "404"
-      ]
+      "httpStatusExpected": []
     },
     "tests": {
       "responsePolicy": {
         "httpStatusExpected": true,
         "mustBeConformant": true
-      }
+      },
+      "skippedKeys": [
+        "schema-maxlength-scan"
+      ]
     }
   },
   "environments": {
@@ -69,9 +75,9 @@
         },
         "email": {
           "name": "SCAN42C_EMAIL",
-          "default": "",
+          "from": "environment",
           "required": false,
-          "from": "environment"
+          "default": ""
         }
       }
     }
@@ -98,7 +104,10 @@
             ],
             "requestBody": {
               "mode": "json",
-              "json": {}
+              "json": {
+                "book_title": "42Crunch book",
+                "secret": "secret for 42Crunch book"
+              }
             }
           }
         },
@@ -234,7 +243,7 @@
               "fuzzing": true,
               "$ref": "#/operations/api_views.books.get_by_title/request",
               "environment": {
-                "book_title": "bookTitle39"
+                "book_title": "42Crunch book"
               }
             }
           ],
@@ -328,7 +337,7 @@
       "request": {
         "operationId": "api_views.users.delete_user",
         "auth": [
-          "bearerAuth"
+          "bearerAuth/bearerAdminAuth"
         ],
         "request": {
           "type": "42c",
@@ -339,7 +348,7 @@
             "paths": [
               {
                 "key": "username",
-                "value": "test"
+                "value": "{{username}}"
               }
             ]
           }
@@ -368,17 +377,33 @@
           }
         }
       },
+      "before": [
+        {
+          "$ref": "#/operations/api_views.users.register_user/request",
+          "environment": {
+            "username": "user4",
+            "password": "pass4",
+            "email": "mail4@mail.com"
+          }
+        }
+      ],
       "scenarios": [
         {
           "key": "happy.path",
           "requests": [
             {
               "fuzzing": true,
-              "$ref": "#/operations/api_views.users.delete_user/request"
+              "$ref": "#/operations/api_views.users.delete_user/request",
+              "environment": {
+                "username": "user4"
+              }
             }
           ],
           "fuzzing": true
         }
+      ],
+      "authorizationTests": [
+        "AdminOnlyOps"
       ]
     },
     "api_views.users.get_all_users": {
@@ -439,7 +464,7 @@
             "paths": [
               {
                 "key": "username",
-                "value": "test"
+                "value": "{{username}}"
               }
             ]
           }
@@ -546,7 +571,11 @@
             ],
             "requestBody": {
               "mode": "json",
-              "json": {}
+              "json": {
+                "username": "{{username}}",
+                "password": "{{password}}",
+                "email": "{{email}}"
+              }
             }
           }
         },
@@ -575,7 +604,18 @@
           "requests": [
             {
               "fuzzing": true,
-              "$ref": "#/operations/api_views.users.register_user/request"
+              "$ref": "#/operations/api_views.users.register_user/request",
+              "environment": {
+                "username": "user3",
+                "password": "pass3",
+                "email": "mail3@mail.com"
+              }
+            },
+            {
+              "$ref": "#/operations/api_views.users.delete_user/request",
+              "environment": {
+                "username": "user3"
+              }
             }
           ],
           "fuzzing": true
@@ -835,6 +875,15 @@
       ],
       "target": [
         "bearerAuth/bearerUser2Auth"
+      ]
+    },
+    "AdminOnlyOps": {
+      "key": "authentication-swapping-bfla",
+      "source": [
+        "bearerAuth/bearerAdminAuth"
+      ],
+      "target": [
+        "bearerAuth/bearerAuth"
       ]
     }
   }
