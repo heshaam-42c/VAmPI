@@ -66,6 +66,12 @@
           "from": "environment",
           "required": false,
           "default": ""
+        },
+        "email": {
+          "name": "SCAN42C_EMAIL",
+          "default": "",
+          "required": false,
+          "from": "environment"
         }
       }
     }
@@ -598,12 +604,14 @@
             "paths": [
               {
                 "key": "username",
-                "value": "test"
+                "value": "{{username}}"
               }
             ],
             "requestBody": {
               "mode": "json",
-              "json": {}
+              "json": {
+                "email": "{{email}}"
+              }
             }
           }
         },
