@@ -243,6 +243,14 @@
           }
         }
       },
+      "before": [
+        {
+          "$ref": "#/operations/api_views.books.add_new_book/request",
+          "environment": {
+            "bookTitle": "42Crunch book"
+          }
+        }
+      ],
       "scenarios": [
         {
           "key": "happy.path",
