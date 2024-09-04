@@ -117,5 +117,5 @@ jobs:
       - name: 42crunch-dynamic-api-testing
         run: |
             docker pull 42crunch/scand-agent:v2
-            docker run -e SCAN_TOKEN=${{ steps.upload_v2_scan_config.outputs.SCANV2_TOKEN }} -e SCAN42C_HOST=http://localhost:5002 -e PLATFORM_SERVICE=${{ env.PLATFORM_SERVICE_ENDPOINT }} 42crunch/scand-agent:v2
+            docker run --network="host" -e SCAN_TOKEN=${{ steps.upload_v2_scan_config.outputs.SCANV2_TOKEN }} -e SCAN42C_HOST=http://localhost:5002 -e PLATFORM_SERVICE=${{ env.PLATFORM_SERVICE_ENDPOINT }} 42crunch/scand-agent:v2
             echo "Scan report: ${{ env.PLATFORM_URL }}/apis/${{steps.get_vampi_api_id.outputs.VAMPI_API_UUID}}/scan"
