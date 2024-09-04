@@ -51,7 +51,7 @@ jobs:
         with:
           api-token: ${{ secrets.API_TOKEN }}
           platform-url: ${{ env.PLATFORM_URL}}
-          default-collection-name: GitHub-Actions--VAmPI--${{ github.ref_name }}
+          default-collection-name: GitHubActions heshaam-42c/VAmPI--${{ github.ref_name }}
           # Upload results to Github code scanning
           upload-to-code-scanning: true
           log-level: debug
@@ -72,3 +72,49 @@ jobs:
           name: 42c-audit-sarif-report-${{ github.run_id }}
           path: 42c-audit-report-${{ github.run_id }}.sarif
           if-no-files-found: warn
+
+  # We use the output of the previous step to scan the APIs       
+  run_42c_scan:
+    runs-on: ubuntu-latest
+    needs: run_42c_audit
+    permissions:        
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for 42Crunch/api-security-audit-action to upload results to Github Code Scanning
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Deploy API
+        run: |
+          docker compose up -d
+      - name: download_audit_report    
+        uses: actions/download-artifact@v4
+        with:
+          name: auditaction-report-${{ github.run_id }}  
+      - name: get vampi api id
+        id: get_vampi_api_id
+        run: |
+          apiId=$(cat ./audit-action-report-${{ github.run_id }}.json | jq -r '.audit.report.${{ vars.VAMPI_OAS_PATH }}.apiId')
+          echo "VAMPI_API_UUID=$apiId" >> $GITHUB_OUTPUT
+          cat audit-action-report-${{ github.run_id }}.json
+      # Scan V2
+      - name: get_vampi_scan_alias
+        id: parse_alias
+        run: |
+          aliasId=$(cat ./.42c/conf.yaml | yq '.apis.${{ vars.VAMPI_OAS_PATH }}.alias')
+          echo $aliasId
+          echo "VAMPI_SCAN_ALIAS=$aliasId" >> $GITHUB_OUTPUT
+      - name: upload_v2_scan_config
+        id: upload_v2_scan_config
+        run: | 
+            scanconfig_response=$(python3 .42c/scripts/conformance_scanv2.py -c ${{ secrets.API_TOKEN }} -p ${{env.PLATFORM_URL}} -a ${{steps.get_vampi_api_id.outputs.VAMPI_API_UUID}} -n github-actions -t scan_token.json -f .42c/scan/${{steps.parse_alias.outputs.BANK_SCAN_ALIAS}}/scanconf.json --action upload_conf)
+            scan_token=$(cat scan_token.json | jq -r '.scan_token')
+            echo "SCANV2_TOKEN=$scan_token" >> $GITHUB_OUTPUT
+      - name: bank api login
+        run: |
+          vampiResponse=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"name1","password":"pass1"}' http://host.docker.internal:5002/users/v1/login)
+          echo $vampiResponse
+      - name: 42crunch-dynamic-api-testing
+        run: |
+            docker pull 42crunch/scand-agent:v2
+            docker run -e SCAN_TOKEN=${{ steps.upload_v2_scan_config.outputs.SCANV2_TOKEN }} -e SCAN42C_HOST=http://host.docker.internal:5002 -e PLATFORM_SERVICE=${{ env.PLATFORM_SERVICE_ENDPOINT }} 42crunch/scand-agent:v2
+            echo "Scan report: ${{ env.PLATFORM_URL }}/apis/${{steps.get_vampi_api_id.outputs.VAMPI_API_UUID}}/scan"
