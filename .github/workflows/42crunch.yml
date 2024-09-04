@@ -111,7 +111,7 @@ jobs:
             echo "SCANV2_TOKEN=$scan_token" >> $GITHUB_OUTPUT
       - name: vampi api login
         run: |
-          vampiResponse=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"name1","password":"pass1"}' http://host.docker.internal:5002/users/v1/login)
+          vampiResponse=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"name1","password":"pass1"}' http://localhost:5002/users/v1/login)
           echo $vampiResponse
       - name: 42crunch-dynamic-api-testing
         run: |
