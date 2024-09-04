@@ -397,8 +397,8 @@
         {
           "$ref": "#/operations/api_views.users.register_user/request",
           "environment": {
-            "username": "user4",
-            "password": "pass4",
+            "username": "name3",
+            "password": "pass3",
             "email": "mail4@mail.com"
           }
         }
@@ -411,7 +411,7 @@
               "fuzzing": true,
               "$ref": "#/operations/api_views.users.delete_user/request",
               "environment": {
-                "username": "user4"
+                "username": "name3"
               }
             }
           ],
@@ -622,15 +622,15 @@
               "fuzzing": true,
               "$ref": "#/operations/api_views.users.register_user/request",
               "environment": {
-                "username": "user3",
-                "password": "pass3",
+                "username": "name4",
+                "password": "pass4",
                 "email": "mail3@mail.com"
               }
             },
             {
               "$ref": "#/operations/api_views.users.delete_user/request",
               "environment": {
-                "username": "user3"
+                "username": "name4"
               }
             }
           ],
