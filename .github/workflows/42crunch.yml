@@ -106,10 +106,10 @@ jobs:
       - name: upload_v2_scan_config
         id: upload_v2_scan_config
         run: | 
-            scanconfig_response=$(python3 .42c/scripts/conformance_scanv2.py -c ${{ secrets.API_TOKEN }} -p ${{env.PLATFORM_URL}} -a ${{steps.get_vampi_api_id.outputs.VAMPI_API_UUID}} -n github-actions -t scan_token.json -f .42c/scan/${{steps.parse_alias.outputs.BANK_SCAN_ALIAS}}/scanconf.json --action upload_conf)
+            scanconfig_response=$(python3 .42c/scripts/conformance_scanv2.py -c ${{ secrets.API_TOKEN }} -p ${{env.PLATFORM_URL}} -a ${{steps.get_vampi_api_id.outputs.VAMPI_API_UUID}} -n github-actions -t scan_token.json -f .42c/scan/${{steps.parse_alias.outputs.VAMPI_SCAN_ALIAS}}/scanconf.json --action upload_conf)
             scan_token=$(cat scan_token.json | jq -r '.scan_token')
             echo "SCANV2_TOKEN=$scan_token" >> $GITHUB_OUTPUT
-      - name: bank api login
+      - name: vampi api login
         run: |
           vampiResponse=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"name1","password":"pass1"}' http://host.docker.internal:5002/users/v1/login)
           echo $vampiResponse
