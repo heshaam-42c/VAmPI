@@ -510,6 +510,9 @@
           ],
           "fuzzing": true
         }
+      ],
+      "authorizationTests": [
+        "PathParamBOLA"
       ]
     },
     "api_views.users.login_user": {
