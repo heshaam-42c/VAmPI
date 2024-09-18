@@ -1,0 +1,433 @@
+{
+  "version": "2.0.0",
+  "runtimeConfiguration": {
+    "environment": "default",
+    "laxTestingModeEnabled": false,
+    "apiConnectivityCheck": true,
+    "logLevel": "error",
+    "logDestination": "stdout+platform",
+    "logMaxFileSize": 2147483648,
+    "requestHeaderNameRequestId": "x-scan-request-id",
+    "requestHeaderNameScenarioId": "x-scan-scenario-id",
+    "requestHeaderNameRequestType": "x-scan-request-type",
+    "requestFlowrate": 100,
+    "requestTimeout": 30,
+    "requestTlsInsecureSkipVerify": true,
+    "responseFollowRedirection": false,
+    "responseMaxBodySizeScan": 10485760,
+    "happyPathOnly": false,
+    "maxRequestRetryAttempts": 5,
+    "maxScanDuration": 1800,
+    "memoryLimit": 2147483648,
+    "memoryTimeSpan": 10,
+    "reportMaxRequestSizeHappyPath": 8092,
+    "reportMaxRequestSizeTest": 8092,
+    "reportIncludeRequestBody": true,
+    "reportIncludeResponseBody": true,
+    "reportMaxHttpResponseSizeHappyPath": 8092,
+    "reportMaxBodySizeHappyPath": 8092,
+    "reportMaxHttpResponseSizeTest": 8092,
+    "reportMaxBodySizeTest": 8092,
+    "reportIssuesOnly": false,
+    "reportMaxIssues": 1000,
+    "reportMaxSize": 20971520,
+    "reportGenerateCurlCommand": true
+  },
+  "environments": {
+    "default": {
+      "variables": {
+        "bearerAuth": {
+          "name": "SCAN42C_SECURITY_BEARERAUTH",
+          "from": "environment",
+          "required": true
+        },
+        "host": {
+          "name": "SCAN42C_HOST",
+          "from": "environment",
+          "required": false,
+          "default": "http://localhost:4241"
+        },
+        "admin1": {
+          "name": "SCAN42C_SECURITY_ADMIN",
+          "from": "environment",
+          "required": true,
+          "default": ""
+        },
+        "User1": {
+          "name": "SCAN42C_SECURITY_USER",
+          "from": "environment",
+          "required": true,
+          "default": ""
+        }
+      }
+    }
+  },
+  "operations": {
+    "api_views.users.register_user": {
+      "operationId": "api_views.users.register_user",
+      "request": {
+        "operationId": "api_views.users.register_user",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "api_views.users.register_user",
+            "method": "POST",
+            "url": "{{host}}/users/v1/register",
+            "headers": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "username": "{{registerUsername}}",
+                "password": "StrongPassword123",
+                "email": "user-to-delete@example.com"
+              }
+            }
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "400": {
+            "expectations": {
+              "httpStatus": 400
+            }
+          },
+          "default": {
+            "expectations": {
+              "httpStatus": "default"
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/api_views.users.register_user/request",
+              "environment": {
+                "registerUsername": "user_to_delete"
+              }
+            },
+            {
+              "$ref": "#/operations/api_views.users.delete_user/request",
+              "environment": {
+                "registerUsername": "user_to_delete"
+              }
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "api_views.users.delete_user": {
+      "operationId": "api_views.users.delete_user",
+      "request": {
+        "operationId": "api_views.users.delete_user",
+        "auth": [
+          "admin-user"
+        ],
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "api_views.users.delete_user",
+            "method": "DELETE",
+            "url": "{{host}}/users/v1/{username}",
+            "paths": [
+              {
+                "key": "username",
+                "value": "{{registerUsername}}"
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "401": {
+            "expectations": {
+              "httpStatus": 401
+            }
+          },
+          "404": {
+            "expectations": {
+              "httpStatus": 404
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "$ref": "#/operations/api_views.users.register_user/request",
+              "environment": {
+                "registerUsername": "user_to_delete"
+              }
+            },
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/api_views.users.delete_user/request",
+              "environment": {
+                "registerUsername": "user_to_delete"
+              }
+            }
+          ]
+        }
+      ],
+      "authorizationTests": [
+        "DeleteUserBFLA"
+      ]
+    },
+    "api_views.books.add_new_book": {
+      "operationId": "api_views.books.add_new_book",
+      "request": {
+        "operationId": "api_views.books.add_new_book",
+        "auth": [
+          "bearerAuth"
+        ],
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "api_views.books.add_new_book",
+            "method": "POST",
+            "url": "{{host}}/books/v1",
+            "headers": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "book_title": "{{bookTitle}}",
+                "secret": "This is a secret for the book"
+              }
+            }
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "401": {
+            "expectations": {
+              "httpStatus": 401
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/api_views.books.add_new_book/request",
+              "environment": {
+                "bookTitle": "SpecificBookTitle"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "api_views.books.get_by_title": {
+      "operationId": "api_views.books.get_by_title",
+      "request": {
+        "operationId": "api_views.books.get_by_title",
+        "auth": [
+          "bearerAuth"
+        ],
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "api_views.books.get_by_title",
+            "method": "GET",
+            "url": "{{host}}/books/v1/{book_title}",
+            "paths": [
+              {
+                "key": "book_title",
+                "value": "{{bookTitle}}"
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "404": {
+            "expectations": {
+              "httpStatus": 404
+            }
+          }
+        }
+      },
+      "before": [
+        {
+          "$ref": "#/operations/api_views.books.add_new_book/request",
+          "environment": {
+            "bookTitle": "SpecificBookTitle1"
+          }
+        }
+      ],
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/api_views.books.get_by_title/request",
+              "environment": {
+                "bookTitle": "SpecificBookTitle1"
+              }
+            }
+          ]
+        }
+      ],
+      "authorizationTests": [
+        "GetBookBOLA"
+      ]
+    },
+    "api_views.users.login_user": {
+      "operationId": "api_views.users.login_user",
+      "request": {
+        "operationId": "api_views.users.login_user",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "api_views.users.login_user",
+            "method": "POST",
+            "url": "{{host}}/users/v1/login",
+            "headers": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "username": "{{username}}",
+                "password": "{{password}}"
+              }
+            }
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          },
+          "400": {
+            "expectations": {
+              "httpStatus": 400
+            }
+          },
+          "default": {
+            "expectations": {
+              "httpStatus": "default"
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/api_views.users.login_user/request",
+              "environment": {
+                "username": "name1",
+                "password": "pass1"
+              }
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    }
+  },
+  "authenticationDetails": [
+    {
+      "bearerAuth": {
+        "type": "bearer",
+        "default": "bearerAuth",
+        "credentials": {
+          "bearerAuth": {
+            "credential": "{{bearerAuth}}",
+            "description": "bearerAuth security"
+          }
+        }
+      },
+      "admin-user": {
+        "type": "bearer",
+        "default": "admin1",
+        "description": "",
+        "credentials": {
+          "admin1": {
+            "credential": "{{admin1}}",
+            "description": ""
+          }
+        }
+      },
+      "dynamic-token": {
+        "type": "bearer",
+        "default": "User1",
+        "description": "",
+        "credentials": {
+          "User1": {
+            "credential": "{{User1}}",
+            "description": ""
+          }
+        }
+      }
+    }
+  ],
+  "authorizationTests": {
+    "DeleteUserBFLA": {
+      "key": "authentication-swapping-bfla",
+      "source": [
+        "admin-user/admin1"
+      ],
+      "target": [
+        "bearerAuth/bearerAuth"
+      ]
+    },
+    "GetBookBOLA": {
+      "key": "authentication-swapping-bola",
+      "source": [
+        "bearerAuth/bearerAuth"
+      ],
+      "target": [
+        "dynamic-token/User1"
+      ]
+    }
+  }
+}
