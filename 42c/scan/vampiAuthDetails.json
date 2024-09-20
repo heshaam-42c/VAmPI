@@ -1,0 +1,115 @@
+  "authenticationDetails": [
+    {
+      "bearerAuth": {
+        "type": "bearer",
+        "default": "bearerAuth",
+        "credentials": {
+          "bearerAuth": {
+            "credential": "{{bearerAuth}}",
+            "description": "bearerAuth security",
+            "requests": [
+              {
+                "$ref": "#/operations/api_views.users.login_user/request",
+                "environment": {
+                  "username": "name1",
+                  "password": "pass1"
+                },
+                "responses": {
+                  "200": {
+                    "expectations": {
+                      "httpStatus": 200
+                    },
+                    "variableAssignments": {
+                      "bearerAuth": {
+                        "from": "response",
+                        "in": "body",
+                        "contentType": "json",
+                        "path": {
+                          "type": "jsonPointer",
+                          "value": "/auth_token"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "admin-user": {
+        "type": "bearer",
+        "default": "admin1",
+        "credentials": {
+          "admin1": {
+            "credential": "{{admin1}}",
+            "description": "Admin user credentials",
+            "requests": [
+              {
+                "$ref": "#/operations/api_views.users.login_user/request",
+                "environment": {
+                  "username": "admin",
+                  "password": "pass1"
+                },
+                "responses": {
+                  "200": {
+                    "expectations": {
+                      "httpStatus": 200
+                    },
+                    "variableAssignments": {
+                      "admin1": {
+                        "from": "response",
+                        "in": "body",
+                        "contentType": "json",
+                        "path": {
+                          "type": "jsonPointer",
+                          "value": "/auth_token"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "dynamic-token": {
+        "type": "bearer",
+        "default": "User1",
+        "credentials": {
+          "User1": {
+            "credential": "{{User1}}",
+            "description": "Dynamic user token",
+            "requests": [
+              {
+                "$ref": "#/operations/api_views.users.login_user/request",
+                "environment": {
+                  "username": "name2",
+                  "password": "pass2"
+                },
+                "responses": {
+                  "200": {
+                    "expectations": {
+                      "httpStatus": 200
+                    },
+                    "variableAssignments": {
+                      "User1": {
+                        "from": "response",
+                        "in": "body",
+                        "contentType": "json",
+                        "path": {
+                          "type": "jsonPointer",
+                          "value": "/auth_token"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]

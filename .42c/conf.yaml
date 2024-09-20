@@ -1,5 +1,5 @@
 apis:
   openapi_specs/VAmPI_remediated.json:
     alias: vampi
-  openapi_specs/vampi.json:
+  openapi_specs/vampi-mini.json:
     alias: vampi1
