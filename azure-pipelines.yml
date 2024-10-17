@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-  - main
+  - master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -68,13 +68,13 @@ steps:
     targetType: 'inline'
     script: |
       echo "Uploading SARIF report to GitHub Advanced Security (GHAS)"
-      echo "Request body: {\"commit_sha\":\"$(Build.SourceVersion)\",\"ref\":\"refs/heads/main\",\"sarif\":\"$(AUDIT_SARIF_FILE)\"}"
+      echo "Request body: {\"commit_sha\":\"$(Build.SourceVersion)\",\"ref\":\"refs/heads/master\",\"sarif\":\"$(AUDIT_SARIF_FILE)\"}"
       curl -L \
       -H "Authorization: Bearer $(GITHUB_TOKEN)" \
       -H "Accept: application/vnd.github.v3+json" \
       -H "X-GitHub-Api-Version: 2022-11-28" \
       https://api.github.com/repos/heshaam-42c/pixibay/code-scanning/sarifs \
-      -d '{"commit_sha":"$(Build.SourceVersion)","ref":"refs/heads/main","sarif":"$(AUDIT_SARIF_FILE)"}'
+      -d '{"commit_sha":"$(Build.SourceVersion)","ref":"refs/heads/master","sarif":"$(AUDIT_SARIF_FILE)"}'
 
 - task: Bash@3
   displayName: 'Get SARIF report from GitHub Advanced Security (GHAS)'
