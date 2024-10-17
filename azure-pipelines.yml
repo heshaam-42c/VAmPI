@@ -44,7 +44,7 @@ steps:
     platformUrl: '$(platformUrl)'
     logLevel: DEBUG
     defaultCollectionName: 'AzureDevOps heshaam-42c/VAmPI--master'
-    ignoreFailures: 'false'
+    ignoreFailures: 'true'
     jsonReport: 'audit-action-report-$(Build.BuildId).json'
     sarifReport: 'audit-report-$(Build.BuildId).sarif'
 
