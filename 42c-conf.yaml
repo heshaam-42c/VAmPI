@@ -3,6 +3,6 @@ audit:
     '*':
       discovery:
         search:
-          - openapi_specs/*.json
+          - openapi_specs/VAmPI_remediated.json
 
 
