@@ -42,39 +42,40 @@ steps:
     ls -la
 
 # 42Crunch API Security Audit
-- task: APIContractSecurityAudit@3
-  displayName: Auditing OAS Files
-  inputs:
-    apiToken: '$(42C_API_TOKEN)'
-    minScore: '75'
-    platformUrl: '$(platformUrl)'
-    logLevel: DEBUG
-    defaultCollectionName: 'AzureDevOps heshaam-42c/VAmPI--master'
-    ignoreFailures: 'true'
-    sarifReport: 'audit-report-$(Build.BuildId).sarif'
+# - task: APIContractSecurityAudit@3
+#   displayName: Auditing OAS Files
+#   inputs:
+#     apiToken: '$(42C_API_TOKEN)'
+#     minScore: '75'
+#     platformUrl: '$(platformUrl)'
+#     logLevel: DEBUG
+#     defaultCollectionName: 'AzureDevOps heshaam-42c/VAmPI--master'
+#     ignoreFailures: 'true'
+#     sarifReport: 'audit-report-$(Build.BuildId).sarif'
 
 # 42Crunch Freemium API Security Audit
-# - task: APISecurityAuditFreemium@1
-#   inputs:
-#     enforceSQG: false
-#     logLevel: DEBUG
-#     sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
-#     exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
+- task: APISecurityAuditFreemium@1
+  inputs:
+    enforceSQG: false
+    logLevel: DEBUG
+    sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
+    exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
 
 # Publish SARIF Artifact
 - task: PublishBuildArtifacts@1
   displayName: 'publishAuditSarif'
   inputs:
-    PathtoPublish: '$(Build.Repository.LocalPath)/audit-report-$(Build.BuildId).sarif'
+    PathtoPublish: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
     ArtifactName: 'CodeAnalysisLogs'
     publishLocation: 'Container'
 
 # Compress & Base64 encode the sarif file
 - script: |
-    sarif_file_base64=$(gzip -c $(Build.Repository.LocalPath)/audit-report-$(Build.BuildId).sarif | base64 -w0)
+    sarif_file_base64=$(gzip -c $(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif | base64 -w0)
     echo "##vso[task.setvariable variable=AUDIT_SARIF_FILE]$sarif_file_base64"
   displayName: 'Compress & Base64 encode sarif file'
 
+# Upload SARIF report to GitHub Advanced Security (GHAS)
 - task: Bash@3
   displayName: 'Upload SARIF report to GitHub Advanced Security (GHAS)'
   inputs:
@@ -88,3 +89,10 @@ steps:
       -H "X-GitHub-Api-Version: 2022-11-28" \
       https://api.github.com/repos/$(github_org_name)/$(github_repo_name)/code-scanning/sarifs \
       -d '{"commit_sha":"$(Build.SourceVersion)","ref":"refs/heads/$(github_branch_name)","sarif":"$(AUDIT_SARIF_FILE)"}'
+
+# Publish to 42Crunch Advanced Security
+- task: AdvancedSecurity-Publish@1
+  displayName: Publish to Advanced Security
+  inputs:
+    SarifsInputDirectory: '$(Build.Repository.LocalPath)'
+    Category: '42Crunch API Security Audit'
