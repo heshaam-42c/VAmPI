@@ -39,6 +39,7 @@ steps:
 
 - script: |
     wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.yaml
+    pwd
     ls -la
 
 # 42Crunch API Security Audit
