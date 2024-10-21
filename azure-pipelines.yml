@@ -12,7 +12,6 @@ pool:
 variables:
   platformUrl: 'https://demolabs.42crunch.cloud'
   platformService: 'services.demolabs.42crunch.cloud:8001'
-  config_name: azureDevOps
   github_org_name: heshaam-42c
   github_repo_name: VAmPI
   github_branch_name: master
@@ -37,6 +36,10 @@ steps:
   
 - script: python -m pip install requests --upgrade pip
   displayName: 'Install tools'
+
+- script: |
+    wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.yaml
+    ls -la
 
 # 42Crunch API Security Audit
 - task: APIContractSecurityAudit@3
@@ -71,7 +74,7 @@ steps:
     targetType: 'inline'
     script: |
       echo "Uploading SARIF report to GitHub Advanced Security (GHAS)"
-      echo "Request body: {\"commit_sha\":\"$(Build.SourceVersion)\",\"ref\":\"refs/heads/master\",\"sarif\":\"$(AUDIT_SARIF_FILE)\"}"
+      echo "Request body: {\"commit_sha\":\"$(Build.SourceVersion)\",\"ref\":\"refs/heads/$(github_branch_name)\",\"sarif\":\"$(AUDIT_SARIF_FILE)\"}"
       curl -L \
       -H "Authorization: Bearer $(GITHUB_TOKEN)" \
       -H "Accept: application/vnd.github.v3+json" \
