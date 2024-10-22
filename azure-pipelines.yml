@@ -50,7 +50,7 @@ steps:
     ls -la
 
 # 42Crunch API Security Audit
-- task: APIContractSecurityAudit@3
+- task: APIContractSecurityAudit@5
   displayName: Auditing OAS Files
   inputs:
     apiToken: '$(42C_API_TOKEN)'
