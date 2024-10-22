@@ -52,23 +52,23 @@ steps:
     # ls -la
 
 # 42Crunch API Security Audit
-# - task: APIContractSecurityAudit@5
-#   displayName: Auditing OAS Files
-#   inputs:
-#     platformServiceConnection: '42Crunch ADO Token'
-#     minScore: '75'
-#     logLevel: DEBUG
-#     defaultCollectionName: 'AzureDevOps heshaam-42c/VAmPI--master'
-#     ignoreFailures: 'true'
-#     sarifReport: 'audit-report-$(Build.BuildId).sarif'
+- task: APIContractSecurityAudit@5
+  displayName: Auditing OAS Files
+  inputs:
+    platformServiceConnection: '42Crunch ADO Token'
+    minScore: '75'
+    logLevel: DEBUG
+    defaultCollectionName: 'AzureDevOps heshaam-42c/VAmPI--master'
+    ignoreFailures: 'true'
+    sarifReport: 'audit-report-$(Build.BuildId).sarif'
 
 # 42Crunch Freemium API Security Audit
-- task: APISecurityAuditFreemium@1
-  inputs:
-    enforceSQG: false
-    logLevel: DEBUG
-    sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
-    exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
+# - task: APISecurityAuditFreemium@1
+#   inputs:
+#     enforceSQG: false
+#     logLevel: DEBUG
+#     sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
+#     exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
 
 # Publish SARIF Artifact
 - task: PublishBuildArtifacts@1
