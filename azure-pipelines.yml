@@ -46,8 +46,8 @@ steps:
 - script: |
     wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.yaml
     # az apim api export -g customer-pocs -n api-42c-demo --api-id photomanager --export-format OpenApiJsonFile --file-path $(Build.Repository.LocalPath)
-    # wget 'https://www.dropbox.com/scl/fi/55djk9nj7vg9pkd1qzvte/tailwind-products-manager_openapi.yaml?rlkey=ojox2ba41a191wqxm5hzjzaik&st=7kvgdmku&dl=0'
-    # mv tailwind-products-manager_openapi.yaml\?rlkey=ojox2ba41a191wqxm5hzjzaik\&st=7kvgdmku\&dl=0 tailwind-products-manager_openapi.yaml
+    wget 'https://www.dropbox.com/scl/fi/55djk9nj7vg9pkd1qzvte/tailwind-products-manager_openapi.yaml?rlkey=ojox2ba41a191wqxm5hzjzaik&st=7kvgdmku&dl=0'
+    mv tailwind-products-manager_openapi.yaml\?rlkey=ojox2ba41a191wqxm5hzjzaik\&st=7kvgdmku\&dl=0 tailwind-products-manager_openapi.yaml
     pwd
     ls -la
 
@@ -69,7 +69,6 @@ steps:
     logLevel: DEBUG
     sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
     exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
-    auditReportsDir: '$(Build.Repository.LocalPath)'
 
 # Publish SARIF Artifact
 - task: PublishBuildArtifacts@1
