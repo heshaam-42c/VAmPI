@@ -37,6 +37,16 @@ steps:
 - script: python -m pip install requests --upgrade pip
   displayName: 'Install tools'
 
+# Connect to Azure
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'platform-demos-apis-hesh'  # Use the name of the service connection created earlier
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az account show
+      az group list
+
 - script: |
     az apim api export -g customer-pocs -n api-42c-demo --api-id photomanager --export-format OpenApiJsonFile --file-path $(Build.Repository.LocalPath)
     pwd
