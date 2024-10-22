@@ -38,7 +38,7 @@ steps:
   displayName: 'Install tools'
 
 - script: |
-    wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.yaml
+    az apim api export -g customer-pocs -n api-42c-demo --api-id photomanager --export-format OpenApiJsonFile --file-path $(Build.Repository.LocalPath)
     pwd
     ls -la
 
