@@ -48,27 +48,27 @@ steps:
     # az apim api export -g customer-pocs -n api-42c-demo --api-id photomanager --export-format OpenApiJsonFile --file-path $(Build.Repository.LocalPath)
     wget 'https://www.dropbox.com/scl/fi/55djk9nj7vg9pkd1qzvte/tailwind-products-manager_openapi.yaml?rlkey=ojox2ba41a191wqxm5hzjzaik&st=7kvgdmku&dl=0'
     mv tailwind-products-manager_openapi.yaml\?rlkey=ojox2ba41a191wqxm5hzjzaik\&st=7kvgdmku\&dl=0 tailwind-products-manager_openapi.yaml
-    # pwd
-    # ls -la
+    pwd
+    ls -la
 
 # 42Crunch API Security Audit
-- task: APIContractSecurityAudit@5
-  displayName: Auditing OAS Files
-  inputs:
-    platformServiceConnection: '42Crunch ADO Token'
-    minScore: '75'
-    logLevel: DEBUG
-    defaultCollectionName: 'AzureDevOps heshaam-42c/VAmPI--master'
-    ignoreFailures: 'true'
-    sarifReport: 'audit-report-$(Build.BuildId).sarif'
+# - task: APIContractSecurityAudit@5
+#   displayName: Auditing OAS Files
+#   inputs:
+#     platformServiceConnection: '42Crunch ADO Token'
+#     minScore: '75'
+#     logLevel: DEBUG
+#     defaultCollectionName: 'AzureDevOps heshaam-42c/VAmPI--master'
+#     ignoreFailures: 'true'
+#     sarifReport: 'audit-report-$(Build.BuildId).sarif'
 
 # 42Crunch Freemium API Security Audit
-# - task: APISecurityAuditFreemium@1
-#   inputs:
-#     enforceSQG: false
-#     logLevel: DEBUG
-#     sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
-#     exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
+- task: APISecurityAuditFreemium@1
+  inputs:
+    enforceSQG: false
+    logLevel: DEBUG
+    sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
+    exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
 
 # Publish SARIF Artifact
 - task: PublishBuildArtifacts@1
