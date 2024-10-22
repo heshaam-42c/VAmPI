@@ -10,8 +10,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  platformUrl: 'https://demolabs.42crunch.cloud'
-  platformService: 'services.demolabs.42crunch.cloud:8001'
   github_org_name: heshaam-42c
   github_repo_name: VAmPI
   github_branch_name: master
@@ -23,33 +21,15 @@ steps:
     versionSpec: '3.11'
     addToPath: true
     architecture:  x64
-# - checkout: self
-# - checkout: protections
-# - task: NodeTool@0
-#   displayName: Use Node 12 or higher
-#   inputs:
-#     versionSpec: '=12.0.0'
-
-# - task: UsePythonVersion@0
-#   inputs:
-#     versionSpec: '3.10' 
-#     addToPath: true 
-    #architecture: 'x64' # Options: x86, x64 (this argument applies only on Windows agents)
-
-# Install Docker
-# - task: DockerInstaller@0
-#   displayName: 'Install Docker'
-  
-# - script: python -m pip install requests --upgrade pip
-#   displayName: 'Install tools'
 
 - script: |
     # az apim api export -g customer-pocs -n api-42c-demo --api-id photomanager --export-format OpenApiJsonFile --file-path $(Build.Repository.LocalPath)
-    wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.yaml
+    # wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.yaml
     wget 'https://www.dropbox.com/scl/fi/55djk9nj7vg9pkd1qzvte/tailwind-products-manager_openapi.yaml?rlkey=ojox2ba41a191wqxm5hzjzaik&st=7kvgdmku&dl=0'
     mv tailwind-products-manager_openapi.yaml\?rlkey=ojox2ba41a191wqxm5hzjzaik\&st=7kvgdmku\&dl=0 tailwind-products-manager_openapi.yaml
     pwd
-    ls -la
+    # ls -la api-with-examples.yaml
+    ls -la tailwind-products-manager_openapi.yaml
 
 # 42Crunch API Security Audit
 # - task: APIContractSecurityAudit@5
@@ -67,7 +47,7 @@ steps:
   inputs:
     enforceSQG: false
     logLevel: DEBUG
-    sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
+    sarifReport: '$(Build.BuildId)-auditreport.sarif'
     exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
 
 # Publish SARIF Artifact
