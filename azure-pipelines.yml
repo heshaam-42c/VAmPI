@@ -50,7 +50,9 @@ steps:
     mv tailwind-products-manager_openapi.yaml\?rlkey=ojox2ba41a191wqxm5hzjzaik\&st=7kvgdmku\&dl=0 tailwind-products-manager_openapi.yaml
     pwd
     ls -la
+    echo "Sleeping for 5 seconds"
     sleep 5
+    echo "Woke"
 
 # 42Crunch API Security Audit
 # - task: APIContractSecurityAudit@5
