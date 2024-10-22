@@ -72,6 +72,7 @@ steps:
     logLevel: DEBUG
     sarifReport: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.sarif'
     exportAsPDF: '$(Build.Repository.LocalPath)/$(Build.BuildId)-auditreport.pdf'
+    auditReportsDir: '$(Build.Repository.LocalPath)'
 
 # Publish SARIF Artifact
 - task: PublishBuildArtifacts@1
