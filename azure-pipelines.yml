@@ -28,8 +28,7 @@ steps:
     wget 'https://www.dropbox.com/scl/fi/55djk9nj7vg9pkd1qzvte/tailwind-products-manager_openapi.yaml?rlkey=ojox2ba41a191wqxm5hzjzaik&st=7kvgdmku&dl=0'
     mv tailwind-products-manager_openapi.yaml\?rlkey=ojox2ba41a191wqxm5hzjzaik\&st=7kvgdmku\&dl=0 tailwind-products-manager_openapi.yaml
     pwd
-    # ls -la api-with-examples.yaml
-    ls -la tailwind-products-manager_openapi.yaml
+    ls -la
 
 # 42Crunch API Security Audit
 # - task: APIContractSecurityAudit@5
