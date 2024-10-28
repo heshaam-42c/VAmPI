@@ -3,4 +3,5 @@ audit:
     master:
       discovery:
         search:
-          - '**.yaml'
+          - '!openapi_specs/**'
+          - '!42c/**'
