@@ -30,6 +30,21 @@ steps:
     pwd
     ls -la
 
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerComposeFile: 'docker-compose.yml'
+    action: 'Run VAmPI'
+    detached: true
+
+- script: |
+    echo "Waiting for containers to start..."
+    sleep 15
+
+- script: |
+    echo "Running tests or accessing the API"
+    curl http://localhost:5002/createdb
+
 # 42Crunch API Security Audit
 - task: APIContractSecurityAudit@5
   displayName: Auditing OAS Files
@@ -77,3 +92,10 @@ steps:
       -H "X-GitHub-Api-Version: 2022-11-28" \
       https://api.github.com/repos/$(github_org_name)/$(github_repo_name)/code-scanning/sarifs \
       -d '{"commit_sha":"$(Build.SourceVersion)","ref":"refs/heads/$(github_branch_name)","sarif":"$(AUDIT_SARIF_FILE)"}'
+
+- task: APISecurityScanFreemium@1
+  inputs:
+    sarifReport: 'scan-report-$(Build.BuildId).sarif'
+    apiCredential: 'test'
+    apiDefinition: '$(Build.Repository.LocalPath)/tailwind-products-manager_openapi.yaml'
+    targetURL: 'http://localhost:5002'
