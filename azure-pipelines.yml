@@ -108,3 +108,11 @@ steps:
     targetURL: 'http://localhost:5002'
     logLevel: DEBUG
     scanReport: 'scan-report-$(Build.BuildId).json'
+
+# Publish SARIF Artifact
+- task: PublishBuildArtifacts@1
+  displayName: 'publishScanSarif'
+  inputs:
+    PathtoPublish: '$(Build.Repository.LocalPath)/scan-report-$(Build.BuildId).sarif'
+    ArtifactName: 'CodeAnalysisLogs'
+    publishLocation: 'Container'
