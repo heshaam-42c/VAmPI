@@ -3,4 +3,4 @@ audit:
     master:
       discovery:
         search:
-          - *.yaml
+          - **.yaml
