@@ -36,6 +36,7 @@ steps:
     dockerComposeFile: '$(Build.Repository.LocalPath)/docker-compose.yaml'
     action: 'Run a Docker Compose command'
     dockerComposeCommand: 'up -d'
+    projectName: 'vampi-heshaam-42c'
 
 - script: |
     echo "Waiting for containers to start..."
