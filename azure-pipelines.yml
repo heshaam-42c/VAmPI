@@ -35,18 +35,22 @@ steps:
     containerregistrytype: 'Container Registry'
     dockerComposeFile: '$(Build.Repository.LocalPath)/docker-compose.yaml'
     action: 'Run a Docker Compose command'
-    dockerComposeCommand: 'up'
+    dockerComposeCommand: 'up -d'
     projectName: 'vampi_hesh'
 
 - script: |
     echo "Waiting for containers to start..."
-    sleep 30
+    sleep 20
 
 - script: |
     echo "Running tests or accessing the API"
     docker ps -a
     curl http://localhost:5002/createdb
-    docker logs vampi-vulnerable
+
+    VAMPI_token=$(curl -sv -X POST -d '{"username": "admin","password": "pass1"}' -H 'Content-Type: application/json' -H 'Accept: application/json' http://localhost:5002/users/v1/login | jq -r '.auth_token')
+
+    echo "VAmPI API Token: $VAMPI_token"
+    echo "##vso[task.setvariable variable=VAMPI_token]$VAMPI_token"
 
 # 42Crunch API Security Audit
 - task: APIContractSecurityAudit@5
@@ -99,6 +103,6 @@ steps:
 - task: APISecurityScanFreemium@1
   inputs:
     sarifReport: 'scan-report-$(Build.BuildId).sarif'
-    apiCredential: 'test'
+    apiCredential: 'Bearer $(VAMPI_token)'
     apiDefinition: '$(Build.Repository.LocalPath)/tailwind-products-manager_openapi.yaml'
     targetURL: 'http://localhost:5002'
