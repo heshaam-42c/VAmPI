@@ -30,7 +30,7 @@ steps:
     pwd
     ls -la
 
-- task: DockerCompose@0
+- task: DockerCompose@1
   inputs:
     containerregistrytype: 'Container Registry'
     dockerComposeFile: '$(Build.Repository.LocalPath)/docker-compose.yaml'
