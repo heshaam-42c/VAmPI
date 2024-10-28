@@ -34,7 +34,7 @@ steps:
   inputs:
     containerregistrytype: 'Container Registry'
     dockerComposeFile: 'docker-compose.yml'
-    action: 'Run VAmPI'
+    action: 'Run services'
     detached: true
 
 - script: |
