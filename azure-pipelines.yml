@@ -35,8 +35,8 @@ steps:
     containerregistrytype: 'Container Registry'
     dockerComposeFile: '$(Build.Repository.LocalPath)/docker-compose.yaml'
     action: 'Run a Docker Compose command'
-    dockerComposeCommand: 'up -d'
-    projectName: 'vampi-heshaam-42c'
+    dockerComposeCommand: 'up'
+    projectName: 'vampi_hesh'
 
 - script: |
     echo "Waiting for containers to start..."
@@ -46,6 +46,7 @@ steps:
     echo "Running tests or accessing the API"
     docker ps -a
     curl http://localhost:5002/createdb
+    docker logs vampi-vulnerable
 
 # 42Crunch API Security Audit
 - task: APIContractSecurityAudit@5
