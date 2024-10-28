@@ -40,10 +40,11 @@ steps:
 
 - script: |
     echo "Waiting for containers to start..."
-    sleep 60
+    sleep 30
 
 - script: |
     echo "Running tests or accessing the API"
+    docker ps -a
     curl http://localhost:5002/createdb
 
 # 42Crunch API Security Audit
