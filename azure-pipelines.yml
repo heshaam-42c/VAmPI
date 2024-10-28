@@ -33,9 +33,9 @@ steps:
 - task: DockerCompose@0
   inputs:
     containerregistrytype: 'Container Registry'
-    dockerComposeFile: 'docker-compose.yaml'
-    action: 'Run services'
-    detached: true
+    dockerComposeFile: '$(Build.Repository.LocalPath)/docker-compose.yaml'
+    action: 'Run a Docker Compose command'
+    dockerComposeCommand: 'up -d'
 
 - script: |
     echo "Waiting for containers to start..."
