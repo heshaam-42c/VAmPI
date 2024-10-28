@@ -104,7 +104,7 @@ steps:
   inputs:
     sarifReport: 'scan-report-$(Build.BuildId).sarif'
     apiCredential: 'Bearer $(VAMPI_token)'
-    apiDefinition: '$(Build.Repository.LocalPath)/tailwind-products-manager_openapi.yaml'
+    apiDefinition: '$(Build.Repository.LocalPath)/openapi_specs/VAmPI_remediated.json'
     targetURL: 'http://localhost:5002'
     logLevel: DEBUG
     scanReport: 'scan-report-$(Build.BuildId).json'
