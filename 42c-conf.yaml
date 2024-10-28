@@ -1,0 +1,6 @@
+audit:
+  branches:
+    master:
+      discovery:
+        search:
+          - *.yaml
