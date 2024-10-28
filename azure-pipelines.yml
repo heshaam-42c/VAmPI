@@ -40,7 +40,7 @@ steps:
 
 - script: |
     echo "Waiting for containers to start..."
-    sleep 15
+    sleep 60
 
 - script: |
     echo "Running tests or accessing the API"
