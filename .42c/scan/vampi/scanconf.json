@@ -692,11 +692,6 @@
           }
         }
       },
-      "after": [
-        {
-          "$ref": "#/operations/api_views.main.populate_db/request"
-        }
-      ],
       "scenarios": [
         {
           "key": "happy.path",
