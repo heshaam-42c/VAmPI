@@ -722,7 +722,7 @@
       "request": {
         "operationId": "api_views.users.update_password",
         "auth": [
-          "bearerAuth"
+          "bearerAuth/bearerAdminAuth"
         ],
         "request": {
           "type": "42c",
@@ -774,6 +774,11 @@
           }
         }
       },
+      "after": [
+        {
+          "$ref": "#/operations/api_views.main.populate_db/request"
+        }
+      ],
       "scenarios": [
         {
           "key": "happy.path",
@@ -785,16 +790,13 @@
                 "username": "name1",
                 "password": "newpass1"
               }
-            },
-            {
-              "$ref": "#/operations/api_views.main.populate_db/request"
             }
           ],
           "fuzzing": true
         }
       ],
       "authorizationTests": [
-        "PathParamBOLA"
+        "ParameterBOLA"
       ]
     }
   },
@@ -916,6 +918,15 @@
       ],
       "target": [
         "bearerAuth/bearerAuth"
+      ]
+    },
+    "ParameterBOLA": {
+      "key": "authentication-swapping-bola",
+      "source": [
+        "bearerAuth/bearerAdminAuth"
+      ],
+      "target": [
+        "bearerAuth/bearerUser2Auth"
       ]
     }
   }
