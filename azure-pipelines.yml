@@ -10,6 +10,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  platformUrl: 'https://demolabs.42crunch.cloud'
+  platformService: 'services.demolabs.42crunch.cloud:8001'
+  config_name: azureDevOps
   github_org_name: heshaam-42c
   github_repo_name: VAmPI
   github_branch_name: master
@@ -40,10 +43,10 @@ steps:
 
 - script: |
     echo "Waiting for containers to start..."
-    sleep 15
+    sleep 5
 
 - script: |
-    echo "Running tests or accessing the API"
+    echo "Populating the database..."
     docker ps -a
     curl http://localhost:5002/createdb
 
@@ -61,6 +64,7 @@ steps:
     logLevel: DEBUG
     defaultCollectionName: 'AzureDevOps heshaam-42c/VAmPI--master'
     ignoreFailures: 'true'
+    jsonReport: 'audit-action-report-$(Build.BuildId).json'
     sarifReport: 'audit-report-$(Build.BuildId).sarif'
 
 # 42Crunch Freemium API Security Audit
@@ -100,19 +104,76 @@ steps:
       https://api.github.com/repos/$(github_org_name)/$(github_repo_name)/code-scanning/sarifs \
       -d '{"commit_sha":"$(Build.SourceVersion)","ref":"refs/heads/$(github_branch_name)","sarif":"$(AUDIT_SARIF_FILE)"}'
 
-- task: APISecurityScanFreemium@1
+# Required: Fetch API UUID from the Audit summary report
+- task: CmdLine@2
+  displayName: 'Check Audit Summary Report'
   inputs:
-    sarifReport: 'scan-report-$(Build.BuildId).sarif'
-    apiCredential: 'Bearer $(VAMPI_token)'
-    apiDefinition: '$(Build.Repository.LocalPath)/openapi_specs/VAmPI_remediated.json'
-    targetURL: 'http://localhost:5002'
-    logLevel: DEBUG
-    scanReport: 'scan-report-$(Build.BuildId).json'
+    script: |
+      echo "Audit JSON Report:"
+      cat $(Build.Repository.LocalPath)/audit-action-report-$(Build.BuildId).json
 
-# Publish SARIF Artifact
-- task: PublishBuildArtifacts@1
-  displayName: 'publishScanSarif'
+      apiId=$(cat $(Build.Repository.LocalPath)/audit-action-report-$(Build.BuildId).json | jq -r '.audit.report."openapi_specs/VAmPI_remediated.json".apiId')
+      
+      printf "\n"
+      echo "VAmPI API UUID: $apiId"
+      echo "##vso[task.setvariable variable=API_UUID]$apiId"
+
+# Required: Fetch API AliasId from the .42c/conf.yaml
+- task: CmdLine@2
+  displayName: 'Fetch API AliasId'
   inputs:
-    PathtoPublish: '$(Build.Repository.LocalPath)/scan-report-$(Build.BuildId).sarif'
-    ArtifactName: 'CodeAnalysisLogs'
-    publishLocation: 'Container'
+    script: |
+      echo "Audit JSON Report:"
+      cat $(Build.Repository.LocalPath)/.42c/conf.yaml
+
+      aliasId=$(cat $(Build.Repository.LocalPath)/.42c/conf.yaml | yq '.apis.["openapi_specs/VAmPI_remediated.json"].alias')
+
+      printf "\n"
+      echo "VAmPI API AliasId: $aliasId"
+      echo "##vso[task.setvariable variable=API_ALIAS_ID]$aliasId"
+
+# Upload Scan V2 Configuration from file
+- task: PythonScript@0
+  name: uploadscanconfig
+  displayName: Update Scan V2 Configuration
+  inputs:
+    scriptSource: 'filePath' # Options: filePath, inline
+    scriptPath: $(Build.Repository.LocalPath)/scripts/conformance_scanv2.py
+    #script: # Required when scriptSource == inline
+    arguments: -c $(42C_API_TOKEN) -p $(platformUrl) -a $(API_UUID) -n $(config_name) -t scan_token.json -f $(Build.Repository.LocalPath)/.42c/scan/$(API_ALIAS_ID)/scanconf.json --action upload_conf
+
+# Save Scan Token to a variable
+- task: CmdLine@2
+  displayName: 'Check Scan V2 Configuration'
+  name: savescanconfig
+  inputs:
+    script: |
+      scan_content=$(cat $(Build.Repository.LocalPath)/scan_token.json | jq -r '.scan_token')
+      scan_token=$(echo $scan_content | cut -d',' -f1)
+      echo "Scan V2 Token: $scan_token"
+      echo "##vso[task.setvariable variable=SCANV2_TOKEN;isoutput=true]$scan_token"
+
+# Run API Conformance Scan using Docker
+- script: |
+    docker pull 42crunch/scand-agent:v2
+    docker run --network=host -e SCAN_TOKEN=$(savescanconfig.SCANV2_TOKEN) -e SCAN42C_HOST=http://localhost:5002 -e PLATFORM_SERVICE=$(platformService) 42crunch/scand-agent:v2
+    echo "Scan report: $(platformUrl)/apis/$(API_UUID)/scan"
+  displayName: 'Pull and Run 42Crunch Docker Image'
+
+# # 42Crunch API Security Scan (Freemium)
+# - task: APISecurityScanFreemium@1
+#   inputs:
+#     sarifReport: 'scan-report-$(Build.BuildId).sarif'
+#     apiCredential: 'Bearer $(VAMPI_token)'
+#     apiDefinition: '$(Build.Repository.LocalPath)/openapi_specs/VAmPI_remediated.json'
+#     targetURL: 'http://localhost:5002'
+#     logLevel: DEBUG
+#     scanReport: 'scan-report-$(Build.BuildId).json'
+
+# # Publish SARIF Artifact
+# - task: PublishBuildArtifacts@1
+#   displayName: 'publishScanSarif'
+#   inputs:
+#     PathtoPublish: '$(Build.Repository.LocalPath)/scan-report-$(Build.BuildId).sarif'
+#     ArtifactName: 'CodeAnalysisLogs'
+#     publishLocation: 'Container'
