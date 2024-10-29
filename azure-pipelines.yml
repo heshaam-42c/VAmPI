@@ -25,6 +25,9 @@ steps:
     addToPath: true
     architecture:  x64
 
+- script: python -m pip install requests --upgrade pip
+  displayName: 'Install tools'
+
 - script: |
     # az apim api export -g customer-pocs -n api-42c-demo --api-id photomanager --export-format OpenApiJsonFile --file-path $(Build.Repository.LocalPath)
     # wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.yaml
