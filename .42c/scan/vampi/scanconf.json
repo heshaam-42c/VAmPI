@@ -692,6 +692,16 @@
           }
         }
       },
+      "before": [
+        {
+          "$ref": "#/operations/api_views.users.register_user/request",
+          "environment": {
+            "username": "scanuser",
+            "password": "pass",
+            "email": "scanuser@mail.com"
+          }
+        }
+      ],
       "after": [
         {
           "$ref": "#/operations/api_views.main.populate_db/request"
@@ -705,7 +715,7 @@
               "fuzzing": true,
               "$ref": "#/operations/api_views.users.update_email/request",
               "environment": {
-                "username": "name1",
+                "username": "scanuser",
                 "email": "newmail1@mail.com"
               }
             }
@@ -774,6 +784,16 @@
           }
         }
       },
+      "before": [
+        {
+          "$ref": "#/operations/api_views.users.register_user/request",
+          "environment": {
+            "username": "scanuser",
+            "password": "pass",
+            "email": "scanuser@mail.com"
+          }
+        }
+      ],
       "after": [
         {
           "$ref": "#/operations/api_views.main.populate_db/request"
@@ -787,7 +807,7 @@
               "fuzzing": true,
               "$ref": "#/operations/api_views.users.update_password/request",
               "environment": {
-                "username": "name1",
+                "username": "scanuser",
                 "password": "newpass1"
               }
             }
