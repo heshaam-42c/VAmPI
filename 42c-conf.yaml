@@ -5,5 +5,4 @@ audit:
         search:
           - '*.yaml'
           - 'openapi_specs/VAmPI_remediated.json'
-          - '!openapi_specs/**'
           - '!42c/**'

@@ -138,7 +138,7 @@ steps:
   displayName: Update Scan V2 Configuration
   inputs:
     scriptSource: 'filePath' # Options: filePath, inline
-    scriptPath: $(Build.Repository.LocalPath)/scripts/conformance_scanv2.py
+    scriptPath: $(Build.Repository.LocalPath)/.42c/scripts/conformance_scanv2.py
     #script: # Required when scriptSource == inline
     arguments: -c $(42C_API_TOKEN) -p $(platformUrl) -a $(API_UUID) -n $(config_name) -t scan_token.json -f $(Build.Repository.LocalPath)/.42c/scan/$(API_ALIAS_ID)/scanconf.json --action upload_conf
 
