@@ -774,11 +774,6 @@
           }
         }
       },
-      "after": [
-        {
-          "$ref": "#/operations/api_views.main.populate_db/request"
-        }
-      ],
       "scenarios": [
         {
           "key": "happy.path",
@@ -792,11 +787,7 @@
               }
             },
             {
-              "$ref": "#/operations/api_views.users.update_password/request",
-              "environment": {
-                "username": "name1",
-                "password": "pass1"
-              }
+              "$ref": "#/operations/api_views.main.populate_db/request"
             }
           ],
           "fuzzing": true
