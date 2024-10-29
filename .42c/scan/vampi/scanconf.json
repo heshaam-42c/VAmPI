@@ -60,24 +60,6 @@
           "from": "environment",
           "required": false,
           "default": "http://localhost:5002"
-        },
-        "username": {
-          "name": "SCAN42C_USERNAME",
-          "from": "environment",
-          "required": false,
-          "default": ""
-        },
-        "password": {
-          "name": "SCAN42C_PASSWORD",
-          "from": "environment",
-          "required": false,
-          "default": ""
-        },
-        "email": {
-          "name": "SCAN42C_EMAIL",
-          "from": "environment",
-          "required": false,
-          "default": ""
         }
       }
     }
@@ -249,6 +231,11 @@
           "environment": {
             "bookTitle": "42Crunch book"
           }
+        }
+      ],
+      "after": [
+        {
+          "$ref": "#/operations/api_views.main.populate_db/request"
         }
       ],
       "scenarios": [
@@ -505,7 +492,10 @@
           "requests": [
             {
               "fuzzing": true,
-              "$ref": "#/operations/api_views.users.get_by_username/request"
+              "$ref": "#/operations/api_views.users.get_by_username/request",
+              "environment": {
+                "username": "name1"
+              }
             }
           ],
           "fuzzing": true
@@ -565,7 +555,11 @@
           "requests": [
             {
               "fuzzing": true,
-              "$ref": "#/operations/api_views.users.login_user/request"
+              "$ref": "#/operations/api_views.users.login_user/request",
+              "environment": {
+                "username": "name1",
+                "password": "newpass1"
+              }
             }
           ],
           "fuzzing": true
@@ -704,11 +698,18 @@
           "requests": [
             {
               "fuzzing": true,
-              "$ref": "#/operations/api_views.users.update_email/request"
+              "$ref": "#/operations/api_views.users.update_email/request",
+              "environment": {
+                "username": "name1",
+                "email": "newmail1@mail.com"
+              }
             }
           ],
           "fuzzing": true
         }
+      ],
+      "authorizationTests": [
+        "PathParamBOLA"
       ]
     },
     "api_views.users.update_password": {
@@ -774,7 +775,11 @@
           "requests": [
             {
               "fuzzing": true,
-              "$ref": "#/operations/api_views.users.update_password/request"
+              "$ref": "#/operations/api_views.users.update_password/request",
+              "environment": {
+                "username": "name1",
+                "password": "newpass1"
+              }
             }
           ],
           "fuzzing": true
@@ -785,6 +790,11 @@
       ]
     }
   },
+  "before": [
+    {
+      "$ref": "#/operations/api_views.main.populate_db/request"
+    }
+  ],
   "authenticationDetails": [
     {
       "bearerAuth": {

@@ -25,9 +25,11 @@ steps:
     addToPath: true
     architecture:  x64
 
+# Install python requests library
 - script: python -m pip install requests --upgrade pip
   displayName: 'Install tools'
 
+# Fetching additional OAS file using wget
 - script: |
     # az apim api export -g customer-pocs -n api-42c-demo --api-id photomanager --export-format OpenApiJsonFile --file-path $(Build.Repository.LocalPath)
     # wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.yaml
@@ -36,6 +38,7 @@ steps:
     pwd
     ls -la
 
+# Start the API using Docker Compose
 - task: DockerCompose@1
   inputs:
     containerregistrytype: 'Container Registry'
@@ -44,11 +47,10 @@ steps:
     dockerComposeCommand: 'up -d'
     projectName: 'vampi_hesh'
 
+# Wait for the containers to start and populate the database
 - script: |
     echo "Waiting for containers to start..."
     sleep 5
-
-- script: |
     echo "Populating the database..."
     docker ps -a
     curl http://localhost:5002/createdb
