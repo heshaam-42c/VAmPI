@@ -558,7 +558,7 @@
               "$ref": "#/operations/api_views.users.login_user/request",
               "environment": {
                 "username": "name1",
-                "password": "newpass1"
+                "password": "pass1"
               }
             }
           ],
@@ -692,6 +692,15 @@
           }
         }
       },
+      "after": [
+        {
+          "$ref": "#/operations/api_views.users.update_email/request",
+          "environment": {
+            "username": "name1",
+            "email": "mail1@mail.com"
+          }
+        }
+      ],
       "scenarios": [
         {
           "key": "happy.path",
@@ -769,6 +778,15 @@
           }
         }
       },
+      "after": [
+        {
+          "$ref": "#/operations/api_views.users.update_password/request",
+          "environment": {
+            "username": "name1",
+            "password": "pass1"
+          }
+        }
+      ],
       "scenarios": [
         {
           "key": "happy.path",
@@ -790,11 +808,6 @@
       ]
     }
   },
-  "before": [
-    {
-      "$ref": "#/operations/api_views.main.populate_db/request"
-    }
-  ],
   "authenticationDetails": [
     {
       "bearerAuth": {
