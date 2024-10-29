@@ -147,10 +147,10 @@ steps:
 
 # Wait for the containers to start and populate the database
 - script: |
-    echo "Populating the database...\n"
+    echo -e "Populating the database...\n"
     docker ps -a
     curl http://localhost:5002/createdb
-    echo "\nDatabase populated"
+    echo -e "\nDatabase populated"
 
     VAMPI_token=$(curl -sv -X POST -d '{"username": "admin","password": "pass1"}' -H 'Content-Type: application/json' -H 'Accept: application/json' http://localhost:5002/users/v1/login | jq -r '.auth_token')
 
